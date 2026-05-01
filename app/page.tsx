@@ -5,629 +5,676 @@ import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const heroRef = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [activeProduct, setActiveProduct] = useState(0);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const cursorDotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    setTimeout(() => setLoaded(true), 100);
+    const onScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    const onMove = (e: MouseEvent) => {
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+      }
+      if (cursorDotRef.current) {
+        cursorDotRef.current.style.transform = `translate(${e.clientX - 3}px, ${e.clientY - 3}px)`;
+      }
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("mousemove", onMove);
+    };
   }, []);
 
   const products = [
     {
-      name: "Black Oversized Tee",
+      id: "01",
+      name: "Black Oversized",
+      sub: "The Phantom",
       price: "Rs. 1,499",
       fit: "Oversized Fit",
       detail: "Premium everyday streetwear essential",
-      tag: "BESTSELLER",
-      color: "from-neutral-900 to-black",
-      accent: "#22c55e",
+      bgColor: "#0a0a0a",
+      accent: "#c8f059",
     },
     {
-      name: "White Essential Tee",
+      id: "02",
+      name: "White Essential",
+      sub: "The Ghost",
       price: "Rs. 1,399",
       fit: "Regular / Oversized",
       detail: "Clean minimal design for daily wear",
-      tag: "CLASSIC",
-      color: "from-zinc-800 to-neutral-900",
-      accent: "#d4d4d4",
+      bgColor: "#1a1a1a",
+      accent: "#f0f0f0",
     },
     {
+      id: "03",
       name: "Dark Green Signature",
+      sub: "The Venom",
       price: "Rs. 1,499",
       fit: "Oversized Fit",
       detail: "Core MANTIX identity colorway",
-      tag: "SIGNATURE",
-      color: "from-green-950 to-black",
-      accent: "#4ade80",
+      bgColor: "#0d2b1a",
+      accent: "#22c55e",
     },
   ];
 
-  const stats = [
-    { value: "3", label: "Signature Designs" },
-    { value: "Rs.1,399", label: "Starting Price" },
-    { value: "100%", label: "Nepal-Focused" },
-    { value: "∞", label: "Identity" },
-  ];
-
   return (
-    <main
-      className="min-h-screen overflow-x-hidden"
-      style={{
-        background: "#080808",
-        color: "#f0f0f0",
-        fontFamily: "'DM Sans', sans-serif",
-      }}
-    >
-      {/* Google Fonts */}
+    <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,300;1,9..40,400&family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Syncopate:wght@400;700&family=Jost:wght@200;300;400;500&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; cursor: none; }
+        body { cursor: none; background: #060606; overflow-x: hidden; }
+        a, button { cursor: none; }
 
         :root {
+          --gold: #c9a84c;
+          --gold-light: #e8c96a;
+          --gold-dim: rgba(201,168,76,0.15);
           --green: #22c55e;
-          --green-dim: #16a34a;
-          --green-glow: rgba(34,197,94,0.18);
-          --surface: #0f0f0f;
-          --surface-2: #141414;
-          --border: rgba(255,255,255,0.07);
-          --text-muted: #6b6b6b;
+          --white: #f5f3ef;
+          --off: #1a1a1a;
+          --muted: #4a4a4a;
+          --bg: #060606;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        html { scroll-behavior: smooth; }
-
-        ::selection { background: var(--green); color: #000; }
-
-        .bebas { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.04em; }
-        .mono { font-family: 'Space Mono', monospace; }
-
-        .noise-overlay {
-          position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: 0.025;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-          background-size: 128px 128px;
+        .cursor-ring {
+          position: fixed; top: 0; left: 0;
+          width: 40px; height: 40px;
+          border: 1px solid var(--gold);
+          border-radius: 50%;
+          pointer-events: none; z-index: 9999;
+          transition: transform 0.12s ease;
+          mix-blend-mode: difference;
+        }
+        .cursor-dot {
+          position: fixed; top: 0; left: 0;
+          width: 6px; height: 6px;
+          background: var(--gold);
+          border-radius: 50%;
+          pointer-events: none; z-index: 9999;
+          transition: transform 0.04s linear;
         }
 
-        .scanline {
-          position: fixed; top: 0; left: 0; width: 100%; height: 2px;
-          background: linear-gradient(to right, transparent, var(--green), transparent);
-          opacity: 0.6; z-index: 200; pointer-events: none;
-          animation: scanDown 8s linear infinite;
+        .cormorant { font-family: 'Cormorant Garamond', Georgia, serif; }
+        .syncopate { font-family: 'Syncopate', sans-serif; }
+        .jost { font-family: 'Jost', sans-serif; }
+
+        .intro {
+          position: fixed; inset: 0; z-index: 1000;
+          background: #060606;
+          display: flex; align-items: center; justify-content: center;
+          flex-direction: column; gap: 20px;
+          transition: opacity 0.9s ease 1.8s, visibility 0.9s ease 1.8s;
         }
-        @keyframes scanDown {
-          0% { top: -2px; opacity: 0; }
-          10% { opacity: 0.6; }
-          90% { opacity: 0.6; }
-          100% { top: 100vh; opacity: 0; }
+        .intro.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+        .intro-line {
+          width: 0; height: 1px; background: var(--gold);
+          animation: introExpand 1.2s cubic-bezier(0.76,0,0.24,1) 0.3s forwards;
+        }
+        @keyframes introExpand { to { width: 200px; } }
+        .intro-label {
+          font-family: 'Syncopate', sans-serif;
+          font-size: 0.5rem; letter-spacing: 0.55em;
+          color: var(--gold); text-transform: uppercase;
+          opacity: 0; animation: fadeUp 0.7s ease 1s forwards;
+        }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+        .reveal {
+          opacity: 0; transform: translateY(28px);
+          transition: opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1);
+        }
+        .reveal.in { opacity: 1; transform: translateY(0); }
+        .d1 { transition-delay: 0.1s; }
+        .d2 { transition-delay: 0.25s; }
+        .d3 { transition-delay: 0.42s; }
+        .d4 { transition-delay: 0.6s; }
+
+        .nav-link {
+          font-family: 'Jost', sans-serif;
+          font-size: 0.62rem; font-weight: 300;
+          letter-spacing: 0.28em; text-transform: uppercase;
+          color: #505050; text-decoration: none;
+          position: relative; padding-bottom: 3px;
+          transition: color 0.3s;
+        }
+        .nav-link::after {
+          content: ''; position: absolute; bottom: 0; left: 0;
+          width: 0; height: 1px; background: var(--gold);
+          transition: width 0.35s ease;
+        }
+        .nav-link:hover { color: var(--gold); }
+        .nav-link:hover::after { width: 100%; }
+
+        .gold-hr {
+          width: 40px; height: 1px;
+          background: linear-gradient(90deg, transparent, var(--gold), transparent);
+          border: none;
         }
 
-        .ticker-wrap {
-          overflow: hidden; white-space: nowrap;
-          border-top: 1px solid var(--border);
-          border-bottom: 1px solid var(--border);
-          background: #0a0a0a;
+        .eyebrow {
+          display: flex; align-items: center; gap: 16px;
+          font-family: 'Syncopate', sans-serif;
+          font-size: 0.48rem; letter-spacing: 0.42em;
+          text-transform: uppercase; color: var(--gold);
         }
-        .ticker-track {
-          display: inline-flex; gap: 0;
-          animation: ticker 28s linear infinite;
+        .eyebrow::before {
+          content: ''; display: block;
+          width: 28px; height: 1px;
+          background: var(--gold); flex-shrink: 0;
         }
-        @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-        .product-card {
+        .cta-gold {
+          display: inline-flex; align-items: center; gap: 14px;
+          background: var(--gold); color: #060606;
+          font-family: 'Syncopate', sans-serif;
+          font-size: 0.48rem; font-weight: 700; letter-spacing: 0.34em;
+          text-transform: uppercase; text-decoration: none;
+          padding: 18px 38px; border: none;
           position: relative; overflow: hidden;
-          border: 1px solid var(--border);
-          border-radius: 2px;
-          transition: border-color 0.3s, transform 0.4s;
-          background: var(--surface);
-          cursor: pointer;
+          transition: background 0.3s, transform 0.2s;
         }
-        .product-card:hover { border-color: var(--green); transform: translateY(-4px); }
-        .product-card::before {
-          content: ''; position: absolute; inset: 0;
-          background: linear-gradient(135deg, var(--green-glow), transparent 60%);
-          opacity: 0; transition: opacity 0.4s;
-        }
-        .product-card:hover::before { opacity: 1; }
-
-        .glow-btn {
-          position: relative; overflow: hidden;
-          background: var(--green); color: #000;
-          border: none; border-radius: 2px;
-          font-weight: 700; font-size: 0.75rem;
-          letter-spacing: 0.14em; text-transform: uppercase;
-          padding: 14px 32px; cursor: pointer;
-          transition: background 0.2s, transform 0.2s;
-        }
-        .glow-btn:hover { background: #4ade80; transform: scale(1.02); }
-
-        .outline-btn {
-          border: 1px solid var(--green); color: var(--green);
-          background: transparent; border-radius: 2px;
-          font-weight: 700; font-size: 0.75rem;
-          letter-spacing: 0.14em; text-transform: uppercase;
-          padding: 14px 32px; cursor: pointer;
-          transition: background 0.2s, color 0.2s;
-          text-decoration: none; display: inline-block;
-        }
-        .outline-btn:hover { background: var(--green); color: #000; }
-
-        .feature-item {
-          border-bottom: 1px solid var(--border);
-          padding: 28px 0;
-          display: grid; grid-template-columns: 3rem 1fr auto;
-          align-items: start; gap: 20px;
-          transition: background 0.2s;
-        }
-        .feature-item:last-child { border-bottom: none; }
-
-        .marquee-hero {
-          font-family: 'Bebas Neue', sans-serif;
-          font-size: clamp(80px, 15vw, 200px);
-          line-height: 0.9;
-          color: transparent;
-          -webkit-text-stroke: 1px rgba(255,255,255,0.12);
-          white-space: nowrap;
-          pointer-events: none;
-          user-select: none;
-          animation: marqueeSlide 22s linear infinite;
-        }
-        @keyframes marqueeSlide {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
-        }
-
-        .badge {
-          font-family: 'Space Mono', monospace;
-          font-size: 0.6rem; letter-spacing: 0.18em;
-          padding: 4px 10px; border-radius: 1px;
-          text-transform: uppercase;
-          border: 1px solid var(--green);
-          color: var(--green);
-          display: inline-block;
-        }
-
-        .grid-cross {
-          position: absolute;
-          width: 12px; height: 12px;
-          border: 1px solid var(--green);
-          opacity: 0.5;
-        }
-        .grid-cross::before {
+        .cta-gold::after {
           content: ''; position: absolute;
-          left: 50%; top: -4px;
-          width: 1px; height: 20px;
-          background: var(--green); transform: translateX(-50%);
+          top: 0; left: -100%; width: 100%; height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+          transition: left 0.5s;
         }
-        .grid-cross::after {
-          content: ''; position: absolute;
-          top: 50%; left: -4px;
-          height: 1px; width: 20px;
-          background: var(--green); transform: translateY(-50%);
+        .cta-gold:hover::after { left: 100%; }
+        .cta-gold:hover { background: var(--gold-light); transform: scale(1.01); }
+
+        .cta-outline {
+          display: inline-flex; align-items: center; gap: 14px;
+          background: transparent; color: var(--white);
+          font-family: 'Syncopate', sans-serif;
+          font-size: 0.48rem; font-weight: 400; letter-spacing: 0.34em;
+          text-transform: uppercase; text-decoration: none;
+          padding: 17px 38px;
+          border: 1px solid rgba(255,255,255,0.12);
+          transition: border-color 0.3s, color 0.3s;
+        }
+        .cta-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+        .product-tab {
+          border: none; background: none;
+          font-family: 'Syncopate', sans-serif;
+          font-size: 0.42rem; letter-spacing: 0.36em; text-transform: uppercase;
+          color: #2e2e2e; padding: 12px 0;
+          border-bottom: 1px solid transparent;
+          transition: color 0.3s, border-color 0.3s;
+          cursor: none;
+        }
+        .product-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .product-tab:hover:not(.active) { color: #6a6a6a; }
+
+        .marquee-outer { overflow: hidden; }
+        .marquee-track {
+          display: flex; width: max-content;
+          animation: marqueeAnim 32s linear infinite;
+        }
+        @keyframes marqueeAnim { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        .feature-row {
+          display: grid; grid-template-columns: 56px 1fr;
+          gap: 32px; align-items: start;
+          padding: 40px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .feature-row:last-child { border-bottom: none; }
+
+        .form-field {
+          width: 100%; background: transparent; border: none;
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+          padding: 14px 0; color: var(--white);
+          font-family: 'Jost', sans-serif; font-size: 0.88rem; font-weight: 300;
+          letter-spacing: 0.05em; outline: none;
+          transition: border-color 0.3s;
+        }
+        .form-field:focus { border-bottom-color: var(--gold); }
+        .form-field::placeholder { color: #282828; }
+        .form-field option { background: #0a0a0a; color: var(--white); }
+
+        .grain {
+          position: fixed; inset: 0; pointer-events: none; z-index: 900; opacity: 0.032;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+          background-size: 180px 180px;
+          animation: grainDrift 0.5s steps(1) infinite;
+        }
+        @keyframes grainDrift {
+          0%   { background-position: 0px 0px; }
+          25%  { background-position: -50px 30px; }
+          50%  { background-position: 70px -40px; }
+          75%  { background-position: -20px 60px; }
+          100% { background-position: 0px 0px; }
         }
 
-        .stat-block {
-          border-left: 1px solid var(--border);
-          padding-left: 28px;
-        }
-        .stat-block:first-child { border-left: none; padding-left: 0; }
-
-        .input-field {
-          width: 100%;
-          background: #0a0a0a;
-          border: 1px solid var(--border);
-          border-radius: 2px;
-          padding: 14px 18px;
-          color: #f0f0f0;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.9rem;
-          outline: none;
-          transition: border-color 0.2s;
-        }
-        .input-field:focus { border-color: var(--green); }
-        .input-field::placeholder { color: var(--text-muted); }
-
-        .section-label {
-          font-family: 'Space Mono', monospace;
-          font-size: 0.65rem; letter-spacing: 0.24em;
-          text-transform: uppercase; color: var(--green);
-        }
-
-        .corner-bracket {
-          position: absolute;
-          width: 18px; height: 18px;
-          border-color: var(--green); border-style: solid;
-          opacity: 0.6;
-        }
-        .tl { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
-        .tr { top: 10px; right: 10px; border-width: 1px 1px 0 0; }
-        .bl { bottom: 10px; left: 10px; border-width: 0 0 1px 1px; }
-        .br { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
-
-        @media (max-width: 768px) {
-          .hide-mobile { display: none !important; }
-          .show-mobile { display: flex !important; }
+        @media (max-width: 900px) {
+          .hide-sm { display: none !important; }
+          .two-col { grid-template-columns: 1fr !important; }
+          .three-col { grid-template-columns: 1fr !important; }
+          html, body { cursor: auto !important; }
         }
       `}</style>
 
-      {/* Atmosphere overlays */}
-      <div className="noise-overlay" />
-      <div className="scanline" />
+      {/* Film grain */}
+      <div className="grain" />
 
-      {/* Header */}
-      <header
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          borderBottom: `1px solid ${scrollY > 40 ? "rgba(34,197,94,0.2)" : "transparent"}`,
-          background: scrollY > 40 ? "rgba(8,8,8,0.92)" : "transparent",
-          backdropFilter: scrollY > 40 ? "blur(20px)" : "none",
-          transition: "all 0.4s",
-          padding: "0 40px",
-          height: "68px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <a href="#" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
+      {/* Custom cursor */}
+      <div ref={cursorRef} className="cursor-ring hide-sm" />
+      <div ref={cursorDotRef} className="cursor-dot hide-sm" />
+
+      {/* Intro loader */}
+      <div className={`intro ${loaded ? "hide" : ""}`}>
+        <div className="intro-line" />
+        <div className="intro-label">MANTIX — 2026</div>
+      </div>
+
+      {/* ━━━━━━━━━━━━━━━━━━━ HEADER */}
+      <header style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        padding: "0 64px", height: "76px",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        background: scrollY > 60 ? "rgba(6,6,6,0.93)" : "transparent",
+        borderBottom: scrollY > 60 ? "1px solid rgba(201,168,76,0.1)" : "1px solid transparent",
+        backdropFilter: scrollY > 60 ? "blur(28px)" : "none",
+        transition: "all 0.55s cubic-bezier(0.16,1,0.3,1)",
+      }}>
+        <a href="#" style={{ display: "flex", alignItems: "center", gap: "16px", textDecoration: "none" }}>
           <div style={{ position: "relative" }}>
             <div style={{
-              position: "absolute", inset: -4,
-              borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(34,197,94,0.25), transparent 70%)",
+              position: "absolute", inset: "-6px", borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(201,168,76,0.22), transparent 70%)",
             }} />
-            <Image src="/MANTIX_LOGO.png" alt="MANTIX" width={42} height={42} style={{ borderRadius: "50%", position: "relative" }} />
+            <Image src="/MANTIX_LOGO.png" alt="MANTIX" width={42} height={42}
+              style={{ borderRadius: "50%", position: "relative", filter: "drop-shadow(0 0 14px rgba(201,168,76,0.55))" }}
+            />
           </div>
           <div>
-            <div className="bebas" style={{ fontSize: "1.5rem", color: "#22c55e", lineHeight: 1, letterSpacing: "0.2em" }}>MANTIX</div>
-            <div className="mono" style={{ fontSize: "0.5rem", letterSpacing: "0.3em", color: "#6b6b6b", textTransform: "uppercase" }}>Designed T-Shirts</div>
+            <div className="syncopate" style={{ fontSize: "0.88rem", color: "#c9a84c", letterSpacing: "0.34em", lineHeight: 1 }}>MANTIX</div>
+            <div className="jost" style={{ fontSize: "0.46rem", letterSpacing: "0.42em", color: "#2e2e2e", textTransform: "uppercase", marginTop: "3px" }}>Designed T-Shirts · Nepal</div>
           </div>
         </a>
 
-        <nav className="hide-mobile" style={{ display: "flex", gap: "40px", listStyle: "none" }}>
-          {["Collection", "Why MANTIX", "Early Access", "Contact"].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase().replace(" ", "-")}`}
-              style={{
-                textDecoration: "none",
-                color: "#8a8a8a",
-                fontSize: "0.75rem",
-                letterSpacing: "0.16em",
-                textTransform: "uppercase",
-                fontWeight: 500,
-                transition: "color 0.2s",
-              }}
-              onMouseOver={(e) => (e.currentTarget.style.color = "#22c55e")}
-              onMouseOut={(e) => (e.currentTarget.style.color = "#8a8a8a")}
-            >
-              {item}
-            </a>
+        <nav className="hide-sm" style={{ display: "flex", gap: "44px" }}>
+          {[["Collection", "#collection"], ["Vision", "#why"], ["Early Access", "#early-access"], ["Contact", "#contact"]].map(([label, href]) => (
+            <a key={label} href={href} className="nav-link">{label}</a>
           ))}
         </nav>
 
-        <a href="#early-access" className="glow-btn hide-mobile" style={{ textDecoration: "none" }}>
-          Join Early Access
+        <a href="#early-access" className="cta-gold hide-sm" style={{ padding: "13px 26px", fontSize: "0.44rem" }}>
+          Early Access →
         </a>
-
-        <button
-          className="show-mobile"
-          style={{ display: "none", background: "none", border: "1px solid rgba(34,197,94,0.4)", color: "#22c55e", padding: "8px 12px", fontSize: "0.65rem", letterSpacing: "0.14em", cursor: "pointer", borderRadius: "2px" }}
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? "CLOSE" : "MENU"}
-        </button>
       </header>
 
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div style={{
-          position: "fixed", inset: 0, zIndex: 49,
-          background: "#080808", padding: "100px 40px 40px",
-          display: "flex", flexDirection: "column", gap: "32px",
-        }}>
-          {["Collection", "Why MANTIX", "Early Access", "Contact"].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase().replace(" ", "-")}`}
-              className="bebas"
-              style={{ fontSize: "3rem", color: "#f0f0f0", textDecoration: "none" }}
-              onClick={() => setMenuOpen(false)}
-            >
-              {item}
-            </a>
-          ))}
-        </div>
-      )}
+      {/* ━━━━━━━━━━━━━━━━━━━ HERO */}
+      <section style={{ minHeight: "100vh", position: "relative", display: "flex", flexDirection: "column", overflow: "hidden", background: "#060606" }}>
 
-      {/* Hero */}
-      <section ref={heroRef} style={{ minHeight: "100vh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
-
-        {/* Background grid */}
+        {/* Ambient glow top-right */}
         <div style={{
-          position: "absolute", inset: 0,
-          backgroundImage: "linear-gradient(rgba(34,197,94,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.04) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-          maskImage: "radial-gradient(ellipse 80% 70% at 50% 30%, black 30%, transparent 100%)",
+          position: "absolute", top: "8%", right: "-8%",
+          width: "65vw", height: "65vw", maxWidth: "900px", maxHeight: "900px",
+          borderRadius: "50%",
+          background: "radial-gradient(ellipse, rgba(201,168,76,0.065) 0%, transparent 65%)",
+          filter: "blur(60px)", pointerEvents: "none",
+        }} />
+        {/* Green accent bottom-left */}
+        <div style={{
+          position: "absolute", bottom: "5%", left: "5%",
+          width: "40vw", height: "40vw", maxWidth: "500px", maxHeight: "500px",
+          borderRadius: "50%",
+          background: "radial-gradient(ellipse, rgba(34,197,94,0.04) 0%, transparent 70%)",
+          filter: "blur(80px)", pointerEvents: "none",
         }} />
 
-        {/* Radial glow */}
-        <div style={{
-          position: "absolute", top: "15%", right: "10%",
-          width: "600px", height: "600px", borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)",
-          filter: "blur(40px)", pointerEvents: "none",
+        {/* Vertical rule */}
+        <div className="hide-sm" style={{
+          position: "absolute", top: 0, left: "64px", bottom: 0,
+          width: "1px",
+          background: "linear-gradient(to bottom, transparent, rgba(201,168,76,0.12) 25%, rgba(201,168,76,0.12) 75%, transparent)",
         }} />
 
-        {/* Corner decoration */}
-        <div style={{ position: "absolute", top: "100px", left: "40px", opacity: 0.4 }}>
-          <div className="mono" style={{ fontSize: "0.55rem", color: "#22c55e", letterSpacing: "0.2em" }}>SYS.001</div>
-          <div className="mono" style={{ fontSize: "0.55rem", color: "#4a4a4a", letterSpacing: "0.2em", marginTop: "4px" }}>FIRST DROP / 2026</div>
-        </div>
+        {/* Main grid */}
+        <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "120px 100px 80px", maxWidth: "1480px", margin: "0 auto", width: "100%" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1.15fr 0.85fr", gap: "80px", alignItems: "center", width: "100%" }} className="two-col">
 
-        <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "120px 40px 60px", maxWidth: "1320px", margin: "0 auto", width: "100%" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center", width: "100%" }}>
-
-            {/* Left */}
+            {/* COPY */}
             <div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "10px", marginBottom: "32px" }}>
-                <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 14px #22c55e", display: "block", animation: "pulse 2s ease-in-out infinite" }} />
-                <span className="mono" style={{ fontSize: "0.6rem", letterSpacing: "0.22em", color: "#22c55e", textTransform: "uppercase" }}>First MANTIX Drop — Nepal</span>
+              <div className={`eyebrow reveal ${loaded ? "in" : ""} d1`} style={{ marginBottom: "44px" }}>
+                First Collection · Nepal · 2026
               </div>
-              <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
 
-              <h1 className="bebas" style={{
-                fontSize: "clamp(72px, 10vw, 140px)",
-                lineHeight: 0.92,
-                color: "#f5f5f5",
-                marginBottom: "8px",
-              }}>
-                WEAR YOUR
-              </h1>
-              <h1 className="bebas" style={{
-                fontSize: "clamp(72px, 10vw, 140px)",
-                lineHeight: 0.92,
-                color: "#22c55e",
-                marginBottom: "32px",
-                textShadow: "0 0 60px rgba(34,197,94,0.4)",
-              }}>
-                IDENTITY
-              </h1>
+              {/* Hero headline */}
+              <div className={`reveal ${loaded ? "in" : ""} d2`}>
+                <div className="cormorant" style={{ fontSize: "clamp(66px, 10.5vw, 152px)", fontWeight: 300, fontStyle: "italic", lineHeight: 0.88, color: "#f5f3ef", letterSpacing: "-0.02em" }}>
+                  Wear
+                </div>
+                <div className="cormorant" style={{
+                  fontSize: "clamp(66px, 10.5vw, 152px)", fontWeight: 700, fontStyle: "normal",
+                  lineHeight: 0.88,
+                  color: "transparent",
+                  WebkitTextStroke: "1px rgba(255,255,255,0.28)",
+                  letterSpacing: "-0.01em",
+                }}>
+                  YOUR
+                </div>
+                <div className="cormorant" style={{
+                  fontSize: "clamp(66px, 10.5vw, 152px)", fontWeight: 300, fontStyle: "italic",
+                  lineHeight: 0.92,
+                  color: "#c9a84c",
+                  textShadow: "0 0 80px rgba(201,168,76,0.3)",
+                  letterSpacing: "-0.02em",
+                }}>
+                  Identity.
+                </div>
+              </div>
 
-              <p style={{ fontSize: "1.05rem", lineHeight: 1.75, color: "#8a8a8a", maxWidth: "460px", marginBottom: "40px" }}>
-                MANTIX launches with three statement T-shirts built for Nepal's new generation — clean graphics, sharp identity, premium feel at a real price.
+              <p className={`jost reveal ${loaded ? "in" : ""} d3`} style={{
+                fontSize: "1rem", fontWeight: 300, lineHeight: 1.9,
+                color: "#484848", maxWidth: "440px",
+                marginTop: "44px", marginBottom: "52px",
+                letterSpacing: "0.04em",
+              }}>
+                Not just a T-shirt. A declaration. MANTIX launches with three precision-crafted pieces built for Nepal's next generation — where streetwear meets sharp identity.
               </p>
 
-              <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", marginBottom: "56px" }}>
-                <a href="#collection" className="glow-btn" style={{ textDecoration: "none" }}>View Designs</a>
-                <a href="#early-access" className="outline-btn">Join Early Access</a>
+              <div className={`reveal ${loaded ? "in" : ""} d3`} style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginBottom: "72px" }}>
+                <a href="#collection" className="cta-gold">Explore Designs ↓</a>
+                <a href="#early-access" className="cta-outline">Reserve Now</a>
               </div>
 
-              {/* Stats */}
-              <div style={{ display: "flex", gap: "0" }}>
-                {stats.map((s) => (
-                  <div key={s.label} className="stat-block" style={{ flex: 1 }}>
-                    <div className="bebas" style={{ fontSize: "2rem", color: "#22c55e", lineHeight: 1 }}>{s.value}</div>
-                    <div style={{ fontSize: "0.65rem", color: "#4a4a4a", marginTop: "4px", letterSpacing: "0.12em", textTransform: "uppercase" }}>{s.label}</div>
+              {/* Micro stats */}
+              <div className={`reveal ${loaded ? "in" : ""} d4`} style={{ display: "flex", gap: "0", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "32px" }}>
+                {[["3", "Signature pieces"], ["Limited", "Test drop only"], ["Rs.1,399", "Starting price"]].map(([val, label], i) => (
+                  <div key={label} style={{ flex: 1, paddingLeft: i === 0 ? 0 : "32px", borderLeft: i === 0 ? "none" : "1px solid rgba(255,255,255,0.05)" }}>
+                    <div className="cormorant" style={{ fontSize: "1.9rem", fontWeight: 600, color: "#c9a84c", lineHeight: 1 }}>{val}</div>
+                    <div className="jost" style={{ fontSize: "0.58rem", color: "#2e2e2e", letterSpacing: "0.2em", textTransform: "uppercase", marginTop: "5px" }}>{label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Right — logo display */}
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <div style={{ position: "relative", width: "420px", height: "480px" }}>
+            {/* LOGO DISPLAY */}
+            <div className={`reveal ${loaded ? "in" : ""} d2`} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <div style={{ position: "relative", width: "420px", height: "520px", display: "flex", alignItems: "center", justifyContent: "center" }}>
 
-                {/* Outer ring decoration */}
+                {/* Orbiting rings */}
                 <div style={{
-                  position: "absolute", inset: 0,
-                  border: "1px solid rgba(34,197,94,0.15)",
-                  borderRadius: "4px",
-                }} />
-                <div style={{ position: "absolute", inset: "12px", border: "1px dashed rgba(34,197,94,0.08)", borderRadius: "2px" }} />
-
-                {/* Corner brackets */}
-                <div className="corner-bracket tl" />
-                <div className="corner-bracket tr" />
-                <div className="corner-bracket bl" />
-                <div className="corner-bracket br" />
-
-                {/* Top label */}
-                <div className="mono" style={{
-                  position: "absolute", top: "24px", left: 0, right: 0,
-                  textAlign: "center", fontSize: "0.55rem", letterSpacing: "0.28em",
-                  color: "rgba(34,197,94,0.5)", textTransform: "uppercase",
-                }}>MANTIX / SS-2026 / NP</div>
-
-                {/* Main logo */}
-                <div style={{
-                  position: "absolute", inset: 0,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <div style={{ position: "relative" }}>
-                    <div style={{
-                      position: "absolute", inset: "-60px",
-                      background: "radial-gradient(circle, rgba(34,197,94,0.2) 0%, transparent 70%)",
-                      borderRadius: "50%", filter: "blur(20px)",
-                    }} />
-                    <Image
-                      src="/MANTIX_LOGO.png"
-                      alt="MANTIX"
-                      width={280}
-                      height={280}
-                      style={{
-                        filter: "drop-shadow(0 0 50px rgba(34,197,94,0.7))",
-                        position: "relative",
-                        animation: "float 6s ease-in-out infinite",
-                      }}
-                    />
-                  </div>
-                  <style>{`@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }`}</style>
-                </div>
-
-                {/* Bottom label */}
-                <div style={{
-                  position: "absolute", bottom: "24px", left: "24px", right: "24px",
-                  borderTop: "1px solid rgba(34,197,94,0.2)",
-                  paddingTop: "14px",
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                }}>
-                  <span className="mono" style={{ fontSize: "0.55rem", color: "rgba(34,197,94,0.5)", letterSpacing: "0.18em" }}>DESIGNED T-SHIRTS</span>
-                  <span className="badge">LIMITED</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Marquee bottom */}
-        <div style={{ overflow: "hidden", paddingBottom: "0px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-          <div style={{ display: "flex", width: "max-content" }}>
-            <div className="marquee-hero">
-              MANTIX &nbsp;·&nbsp; DESIGNED T-SHIRTS &nbsp;·&nbsp; NEPAL &nbsp;·&nbsp; SMART FASHION &nbsp;·&nbsp; SHARP IDENTITY &nbsp;·&nbsp; 2026 &nbsp;·&nbsp;&nbsp;
-            </div>
-            <div className="marquee-hero" aria-hidden>
-              MANTIX &nbsp;·&nbsp; DESIGNED T-SHIRTS &nbsp;·&nbsp; NEPAL &nbsp;·&nbsp; SMART FASHION &nbsp;·&nbsp; SHARP IDENTITY &nbsp;·&nbsp; 2026 &nbsp;·&nbsp;&nbsp;
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Ticker bar */}
-      <div className="ticker-wrap" style={{ padding: "10px 0" }}>
-        <div className="ticker-track">
-          {Array(8).fill(null).map((_, i) => (
-            <span key={i} className="mono" style={{ fontSize: "0.6rem", letterSpacing: "0.22em", color: "#4a4a4a", padding: "0 32px", textTransform: "uppercase" }}>
-              LIMITED TEST DROP &nbsp;·&nbsp; EARLY ACCESS OPEN &nbsp;·&nbsp; NEPAL ONLY &nbsp;·&nbsp; FIRST COLLECTION &nbsp;·&nbsp;
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Collection */}
-      <section id="collection" style={{ padding: "120px 40px", maxWidth: "1320px", margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "64px", flexWrap: "wrap", gap: "24px" }}>
-          <div>
-            <div className="section-label" style={{ marginBottom: "16px" }}>— First Collection / 2026</div>
-            <h2 className="bebas" style={{ fontSize: "clamp(48px, 7vw, 96px)", lineHeight: 0.93, color: "#f5f5f5" }}>
-              THREE DROPS.<br /><span style={{ color: "#22c55e" }}>ONE IDENTITY.</span>
-            </h2>
-          </div>
-          <p style={{ maxWidth: "340px", color: "#6b6b6b", lineHeight: 1.8, fontSize: "0.9rem" }}>
-            Each design is built around MANTIX's core visual language. Vote for your pick to shape what gets made first.
-          </p>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1px", background: "rgba(255,255,255,0.05)" }}>
-          {products.map((product, i) => (
-            <div key={product.name} className="product-card" style={{ background: "#0b0b0b" }}>
-              {/* Image zone */}
-              <div style={{
-                height: "340px",
-                background: `linear-gradient(160deg, ${product.color.replace("from-", "").replace(" to-", ", ")})`,
-                position: "relative", overflow: "hidden",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <div style={{
-                  position: "absolute", inset: 0,
-                  backgroundImage: "linear-gradient(rgba(34,197,94,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.03) 1px, transparent 1px)",
-                  backgroundSize: "24px 24px",
+                  position: "absolute", inset: "20px",
+                  border: "1px solid rgba(201,168,76,0.08)", borderRadius: "50%",
+                  animation: "orbit1 45s linear infinite",
                 }} />
                 <div style={{
-                  position: "absolute", top: "14px", right: "14px",
-                }}>
-                  <span className="mono" style={{ fontSize: "0.55rem", letterSpacing: "0.2em", padding: "5px 10px", border: "1px solid rgba(34,197,94,0.3)", color: "#22c55e", textTransform: "uppercase" }}>
-                    {product.tag}
-                  </span>
-                </div>
-                <div style={{
-                  position: "absolute", bottom: "14px", left: "14px",
-                }}>
-                  <span className="mono" style={{ fontSize: "0.5rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.25)", textTransform: "uppercase" }}>
-                    {String(i + 1).padStart(2, "0")} / 03
-                  </span>
-                </div>
-                <div style={{ position: "relative" }}>
-                  <div style={{
-                    position: "absolute", inset: "-40px",
-                    background: `radial-gradient(circle, ${product.accent}30 0%, transparent 70%)`,
-                    filter: "blur(10px)", borderRadius: "50%",
+                  position: "absolute", inset: "60px",
+                  border: "1px dashed rgba(201,168,76,0.05)", borderRadius: "50%",
+                  animation: "orbit1 30s linear infinite reverse",
+                }} />
+                <style>{`
+                  @keyframes orbit1 { to { transform: rotate(360deg); } }
+                  @keyframes breathe { 0%,100%{transform:scale(1) translateY(0)} 50%{transform:scale(1.04) translateY(-8px)} }
+                `}</style>
+
+                {/* Orbital dots */}
+                {[0, 72, 144, 216, 288].map((deg, i) => (
+                  <div key={i} style={{
+                    position: "absolute", top: "50%", left: "50%",
+                    width: i % 2 === 0 ? "5px" : "3px",
+                    height: i % 2 === 0 ? "5px" : "3px",
+                    borderRadius: "50%",
+                    background: `rgba(201,168,76,${i % 2 === 0 ? 0.35 : 0.15})`,
+                    transform: `rotate(${deg}deg) translateX(190px) translate(-50%,-50%)`,
                   }} />
+                ))}
+
+                {/* Center glow */}
+                <div style={{
+                  position: "absolute", inset: "80px", borderRadius: "50%",
+                  background: "radial-gradient(circle, rgba(201,168,76,0.14) 0%, transparent 70%)",
+                  filter: "blur(30px)",
+                }} />
+
+                {/* Logo */}
+                <div style={{ position: "relative", zIndex: 2 }}>
                   <Image
                     src="/MANTIX_LOGO.png"
-                    alt={product.name}
-                    width={160}
-                    height={160}
+                    alt="MANTIX"
+                    width={260}
+                    height={260}
+                    priority
                     style={{
-                      filter: `drop-shadow(0 0 30px ${product.accent}80)`,
-                      position: "relative",
+                      filter: "drop-shadow(0 0 60px rgba(201,168,76,0.65)) drop-shadow(0 4px 30px rgba(0,0,0,0.8))",
+                      animation: "breathe 8s ease-in-out infinite",
                     }}
                   />
                 </div>
-              </div>
 
-              {/* Info */}
-              <div style={{ padding: "28px" }}>
-                <div style={{ fontSize: "0.65rem", letterSpacing: "0.18em", color: "#22c55e", textTransform: "uppercase", marginBottom: "10px" }}>
-                  Designed Tee
-                </div>
-                <h3 style={{ fontSize: "1.3rem", fontWeight: 700, color: "#f0f0f0", marginBottom: "6px" }}>{product.name}</h3>
-                <p style={{ fontSize: "0.8rem", color: "#5a5a5a", marginBottom: "4px", letterSpacing: "0.06em" }}>{product.fit}</p>
-                <p style={{ fontSize: "0.85rem", color: "#7a7a7a", marginBottom: "28px" }}>{product.detail}</p>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span className="bebas" style={{ fontSize: "1.8rem", color: "#22c55e", letterSpacing: "0.06em" }}>{product.price}</span>
-                  <a href="#early-access" className="glow-btn" style={{ textDecoration: "none", padding: "10px 22px" }}>
-                    Vote / Reserve
-                  </a>
+                {/* Monogram label */}
+                <div className="syncopate" style={{
+                  position: "absolute", bottom: "24px",
+                  fontSize: "0.38rem", letterSpacing: "0.55em", color: "rgba(201,168,76,0.28)",
+                  textTransform: "uppercase",
+                }}>
+                  SS — 2026 — NEPAL
                 </div>
               </div>
             </div>
-          ))}
+
+          </div>
+        </div>
+
+        {/* Ghost marquee */}
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.035)", overflow: "hidden" }}>
+          <div className="marquee-track" style={{ padding: "16px 0" }}>
+            {Array(2).fill(null).map((_, k) => (
+              <div key={k} style={{ display: "flex", alignItems: "center" }}>
+                {["MANTIX", "·", "DESIGNED T-SHIRTS", "·", "NEPAL", "·", "SMART FASHION", "·", "SHARP IDENTITY", "·", "LIMITED DROP", "·", "2026", "·"].map((w, i) => (
+                  <span key={i} className="cormorant" style={{
+                    fontSize: "clamp(60px, 9vw, 120px)", fontWeight: 300,
+                    fontStyle: i % 4 === 0 ? "italic" : "normal",
+                    color: w === "·" ? "rgba(201,168,76,0.18)" : "rgba(255,255,255,0.03)",
+                    padding: "0 18px", lineHeight: 1, whiteSpace: "nowrap",
+                  }}>{w}</span>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Why MANTIX — accordion style */}
-      <section id="why-mantix" style={{ background: "#0a0a0a", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: "1320px", margin: "0 auto", padding: "120px 40px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "start" }}>
+      {/* ━━━━━━━━━━━━━━━━━━━ COLLECTION */}
+      <section id="collection" style={{ background: "#060606", padding: "140px 100px" }}>
+        <div style={{ maxWidth: "1480px", margin: "0 auto" }}>
 
-            <div style={{ position: "sticky", top: "100px" }}>
-              <div className="section-label" style={{ marginBottom: "20px" }}>— Why MANTIX?</div>
-              <h2 className="bebas" style={{ fontSize: "clamp(48px, 6vw, 82px)", lineHeight: 0.93, color: "#f5f5f5", marginBottom: "24px" }}>
-                A SMALL START.<br /><span style={{ color: "#22c55e" }}>A BIG VISION.</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "80px", flexWrap: "wrap", gap: "32px" }}>
+            <div>
+              <div className="eyebrow" style={{ marginBottom: "28px" }}>The Collection · First Drop</div>
+              <h2 className="cormorant" style={{ fontSize: "clamp(48px, 6vw, 88px)", fontWeight: 300, fontStyle: "italic", color: "#f5f3ef", lineHeight: 0.94 }}>
+                Three pieces.<br /><em style={{ color: "#c9a84c" }}>One vision.</em>
               </h2>
-              <p style={{ color: "#5a5a5a", lineHeight: 1.8, fontSize: "0.9rem", marginBottom: "40px" }}>
-                MANTIX is Nepal's next streetwear identity — starting with three designed T-shirts and scaling with AI-driven fashion intelligence.
-              </p>
-              <div style={{ position: "relative", display: "inline-block" }}>
+            </div>
+            <p className="jost" style={{ maxWidth: "320px", color: "#303030", fontSize: "0.84rem", lineHeight: 1.95, fontWeight: 300, letterSpacing: "0.04em" }}>
+              Each design carries a name, a character, a statement. These aren't just shirts — they're the first chapter of something much larger.
+            </p>
+          </div>
+
+          {/* Tab selector */}
+          <div style={{ display: "flex", gap: "48px", borderBottom: "1px solid rgba(255,255,255,0.04)", marginBottom: "0" }}>
+            {products.map((p, i) => (
+              <button key={p.id} className={`product-tab ${activeProduct === i ? "active" : ""}`} onClick={() => setActiveProduct(i)}>
+                {p.id} — {p.name}
+              </button>
+            ))}
+          </div>
+
+          {/* Product showcase */}
+          <div style={{
+            display: "grid", gridTemplateColumns: "1fr 1fr",
+            border: "1px solid rgba(201,168,76,0.07)", borderTop: "none",
+            minHeight: "560px", transition: "all 0.4s ease",
+          }} className="two-col">
+
+            {/* Visual panel */}
+            <div style={{
+              background: `radial-gradient(ellipse at 50% 55%, ${products[activeProduct].bgColor} 0%, #060606 100%)`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              position: "relative", overflow: "hidden",
+              borderRight: "1px solid rgba(201,168,76,0.06)",
+              minHeight: "500px",
+            }}>
+              {/* Grid overlay */}
+              <div style={{
+                position: "absolute", inset: 0,
+                backgroundImage: "linear-gradient(rgba(201,168,76,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.025) 1px, transparent 1px)",
+                backgroundSize: "48px 48px",
+              }} />
+              {/* Ghost number */}
+              <div className="cormorant" style={{
+                position: "absolute", right: "-1vw", bottom: "-4vw",
+                fontSize: "20vw", fontWeight: 700,
+                color: "transparent", WebkitTextStroke: "1px rgba(201,168,76,0.05)",
+                lineHeight: 1, pointerEvents: "none", userSelect: "none",
+              }}>
+                {products[activeProduct].id}
+              </div>
+              {/* Logo */}
+              <div style={{ position: "relative", zIndex: 2 }}>
+                <div style={{
+                  position: "absolute", inset: "-60px", borderRadius: "50%",
+                  background: `radial-gradient(circle, ${products[activeProduct].accent}1a 0%, transparent 70%)`,
+                  filter: "blur(16px)",
+                }} />
                 <Image
                   src="/MANTIX_LOGO.png"
-                  alt="MANTIX"
-                  width={180}
-                  height={180}
-                  style={{ filter: "drop-shadow(0 0 30px rgba(34,197,94,0.5)) grayscale(20%)", opacity: 0.8 }}
+                  alt={products[activeProduct].name}
+                  width={230}
+                  height={230}
+                  style={{
+                    filter: `drop-shadow(0 0 50px ${products[activeProduct].accent}55)`,
+                    position: "relative", transition: "filter 0.5s",
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Info panel */}
+            <div style={{ padding: "64px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div>
+                <div className="syncopate" style={{ fontSize: "0.38rem", letterSpacing: "0.52em", color: "rgba(201,168,76,0.35)", marginBottom: "22px" }}>
+                  {products[activeProduct].id} / 03 — Limited Edition
+                </div>
+                <div className="cormorant" style={{ fontSize: "1rem", fontStyle: "italic", color: "#c9a84c", marginBottom: "10px", letterSpacing: "0.1em" }}>
+                  "{products[activeProduct].sub}"
+                </div>
+                <h3 className="cormorant" style={{ fontSize: "clamp(32px, 4vw, 56px)", fontWeight: 600, color: "#f5f3ef", lineHeight: 1.05, marginBottom: "28px" }}>
+                  {products[activeProduct].name}
+                </h3>
+                <hr className="gold-hr" style={{ marginBottom: "28px" }} />
+                <p className="jost" style={{ color: "#383838", fontSize: "0.85rem", lineHeight: 1.9, fontWeight: 300, marginBottom: "8px" }}>
+                  {products[activeProduct].detail}
+                </p>
+                <p className="jost" style={{ color: "#282828", fontSize: "0.78rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                  {products[activeProduct].fit}
+                </p>
+              </div>
+
+              <div>
+                <div style={{ marginBottom: "32px" }}>
+                  <div className="jost" style={{ fontSize: "0.55rem", letterSpacing: "0.3em", color: "#282828", textTransform: "uppercase", marginBottom: "10px" }}>Starting at</div>
+                  <div className="cormorant" style={{ fontSize: "3.4rem", fontWeight: 600, color: "#c9a84c", lineHeight: 1 }}>{products[activeProduct].price}</div>
+                </div>
+                <a href="#early-access" className="cta-gold" style={{ width: "100%", justifyContent: "center" }}>
+                  Reserve This Piece →
+                </a>
+                {/* Sizes */}
+                <div style={{ display: "flex", gap: "10px", marginTop: "22px" }}>
+                  {["S", "M", "L", "XL", "XXL"].map(s => (
+                    <div key={s} className="jost" style={{
+                      width: "38px", height: "38px",
+                      border: "1px solid rgba(255,255,255,0.06)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "0.6rem", color: "#282828", letterSpacing: "0.08em",
+                    }}>{s}</div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━ QUOTE INTERLUDE */}
+      <section style={{
+        background: "#06080a",
+        borderTop: "1px solid rgba(201,168,76,0.08)",
+        borderBottom: "1px solid rgba(201,168,76,0.08)",
+        padding: "120px 100px", position: "relative", overflow: "hidden",
+      }}>
+        <div style={{
+          position: "absolute", top: "50%", left: "50%",
+          transform: "translate(-50%,-50%)",
+          width: "70vw", height: "70vw", maxWidth: "800px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(201,168,76,0.038) 0%, transparent 60%)",
+          pointerEvents: "none",
+        }} />
+        <div style={{ maxWidth: "860px", margin: "0 auto", textAlign: "center", position: "relative" }}>
+          <div className="cormorant" style={{ fontSize: "clamp(13px, 1.8vw, 20px)", fontStyle: "italic", color: "rgba(201,168,76,0.4)", marginBottom: "36px", letterSpacing: "0.1em" }}>
+            — A word from MANTIX —
+          </div>
+          <blockquote className="cormorant" style={{
+            fontSize: "clamp(30px, 5vw, 64px)", fontWeight: 300, fontStyle: "italic",
+            color: "#f5f3ef", lineHeight: 1.22, letterSpacing: "-0.01em",
+          }}>
+            "We don't make T-shirts.<br />We make&nbsp;<em style={{ color: "#c9a84c" }}>statements</em>&nbsp;you wear."
+          </blockquote>
+          <hr className="gold-hr" style={{ margin: "44px auto", width: "60px", background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent)" }} />
+          <div className="jost" style={{ fontSize: "0.6rem", letterSpacing: "0.36em", color: "#282828", textTransform: "uppercase" }}>
+            MANTIX — Nepal — 2026
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━ WHY MANTIX */}
+      <section id="why" style={{ background: "#060606", padding: "140px 100px" }}>
+        <div style={{ maxWidth: "1480px", margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "0.75fr 1.25fr", gap: "100px", alignItems: "start" }} className="two-col">
+
+            <div style={{ position: "sticky", top: "100px" }}>
+              <div className="eyebrow" style={{ marginBottom: "28px" }}>The Vision</div>
+              <h2 className="cormorant" style={{ fontSize: "clamp(42px, 5vw, 72px)", fontWeight: 300, fontStyle: "italic", color: "#f5f3ef", lineHeight: 0.95, marginBottom: "32px" }}>
+                Built different.<br /><span style={{ color: "#c9a84c" }}>By design.</span>
+              </h2>
+              <hr className="gold-hr" style={{ marginBottom: "32px" }} />
+              <p className="jost" style={{ color: "#303030", fontSize: "0.84rem", lineHeight: 1.95, fontWeight: 300 }}>
+                MANTIX is Nepal's next streetwear identity. We start precise, scale with purpose, and let intelligence — artificial and human — guide every future collection.
+              </p>
+              <div style={{ marginTop: "48px" }}>
+                <Image src="/MANTIX_LOGO.png" alt="MANTIX" width={140} height={140}
+                  style={{ filter: "drop-shadow(0 0 28px rgba(201,168,76,0.45)) grayscale(10%)", opacity: 0.75 }}
                 />
               </div>
             </div>
 
             <div>
               {[
-                { num: "01", title: "Designed T-Shirts", desc: "Original MANTIX T-shirt designs made for everyday style and identity. Every graphic means something." },
-                { num: "02", title: "Modern Streetwear", desc: "Minimal, bold, and youth-focused fashion for Nepal's next generation. No compromise on vision." },
-                { num: "03", title: "Affordable Premium", desc: "We believe premium design shouldn't cost premium money. Early customers get the best prices." },
-                { num: "04", title: "AI-Powered Growth", desc: "Customer choices and feedback will directly guide future collections. Fashion that learns from you." },
-              ].map((item) => (
-                <div key={item.num} className="feature-item">
-                  <span className="mono" style={{ fontSize: "0.65rem", color: "#22c55e", letterSpacing: "0.1em", paddingTop: "4px" }}>{item.num}</span>
-                  <div>
-                    <h3 style={{ fontSize: "1.05rem", fontWeight: 700, color: "#e0e0e0", marginBottom: "8px" }}>{item.title}</h3>
-                    <p style={{ color: "#5a5a5a", fontSize: "0.9rem", lineHeight: 1.7 }}>{item.desc}</p>
+                { n: "I", title: "Designed T-Shirts", body: "Original MANTIX graphics crafted for everyday style and identity. Every line, every placement — intentional." },
+                { n: "II", title: "Modern Streetwear", body: "Minimal, bold, and youth-focused fashion for Nepal's new generation. No compromise on vision." },
+                { n: "III", title: "Affordable Premium", body: "We believe exceptional design shouldn't demand exceptional prices. Early customers always get the best." },
+                { n: "IV", title: "AI-Powered Future", body: "Your choices and feedback directly shape our next collections. Fashion that listens, learns, and evolves." },
+              ].map(item => (
+                <div key={item.n} className="feature-row">
+                  <div className="cormorant" style={{ fontSize: "2.8rem", fontWeight: 300, fontStyle: "italic", color: "rgba(201,168,76,0.18)", lineHeight: 1, paddingTop: "4px" }}>
+                    {item.n}
                   </div>
-                  <div style={{ width: "8px", height: "8px", border: "1px solid rgba(34,197,94,0.3)", borderRadius: "50%", marginTop: "6px", flexShrink: 0 }} />
+                  <div>
+                    <h3 className="cormorant" style={{ fontSize: "1.45rem", fontWeight: 600, color: "#d8d5d0", marginBottom: "10px" }}>{item.title}</h3>
+                    <p className="jost" style={{ color: "#303030", fontSize: "0.84rem", lineHeight: 1.9, fontWeight: 300 }}>{item.body}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -635,140 +682,141 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Full-width CTA strip */}
-      <div style={{
-        background: "linear-gradient(90deg, #0d2010 0%, #0a0a0a 50%, #0d2010 100%)",
-        borderTop: "1px solid rgba(34,197,94,0.2)",
-        borderBottom: "1px solid rgba(34,197,94,0.2)",
-        padding: "28px 40px",
-        display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "20px",
-      }}>
-        <p className="bebas" style={{ fontSize: "1.6rem", letterSpacing: "0.1em", color: "#f5f5f5" }}>
-          EARLY ACCESS OPENING SOON — <span style={{ color: "#22c55e" }}>HELP CHOOSE THE FIRST DROP</span>
-        </p>
-        <a href="#early-access" className="glow-btn" style={{ textDecoration: "none", whiteSpace: "nowrap" }}>
-          Join Now →
-        </a>
-      </div>
-
-      {/* Early Access Form */}
-      <section id="early-access" style={{ padding: "120px 40px" }}>
+      {/* ━━━━━━━━━━━━━━━━━━━ EARLY ACCESS */}
+      <section id="early-access" style={{ background: "#05080a", padding: "140px 100px", borderTop: "1px solid rgba(201,168,76,0.07)" }}>
         <div style={{ maxWidth: "720px", margin: "0 auto" }}>
 
-          <div style={{ textAlign: "center", marginBottom: "64px" }}>
-            <div className="section-label" style={{ marginBottom: "20px", textAlign: "center" }}>— Early Access</div>
-            <h2 className="bebas" style={{ fontSize: "clamp(48px, 7vw, 88px)", lineHeight: 0.92, color: "#f5f5f5", marginBottom: "20px" }}>
-              CLAIM YOUR<br /><span style={{ color: "#22c55e" }}>SPOT.</span>
+          {/* Header */}
+          <div style={{ textAlign: "center", marginBottom: "88px" }}>
+            <Image src="/MANTIX_LOGO.png" alt="MANTIX" width={60} height={60}
+              style={{ filter: "drop-shadow(0 0 22px rgba(201,168,76,0.55))", marginBottom: "36px" }}
+            />
+            <div className="eyebrow" style={{ justifyContent: "center", marginBottom: "28px" }}>Early Access — Limited Spots</div>
+            <h2 className="cormorant" style={{ fontSize: "clamp(44px, 6.5vw, 84px)", fontWeight: 300, fontStyle: "italic", color: "#f5f3ef", lineHeight: 0.94, marginBottom: "24px" }}>
+              Claim your<br /><em style={{ color: "#c9a84c" }}>place.</em>
             </h2>
-            <p style={{ color: "#6b6b6b", lineHeight: 1.8, fontSize: "0.95rem" }}>
-              Fill in your details to vote on designs and get early access pricing before we launch publicly.
+            <p className="jost" style={{ color: "#303030", fontSize: "0.86rem", lineHeight: 1.9, fontWeight: 300, maxWidth: "400px", margin: "0 auto" }}>
+              Vote on which designs we produce first and lock in early-access pricing before we go public.
             </p>
           </div>
 
           {/* Form card */}
           <div style={{
+            border: "1px solid rgba(201,168,76,0.1)",
+            background: "rgba(201,168,76,0.015)",
+            padding: "64px",
             position: "relative",
-            border: "1px solid rgba(34,197,94,0.2)",
-            borderRadius: "4px",
-            background: "#0b0b0b",
-            padding: "48px",
-            overflow: "hidden",
           }}>
-            <div className="corner-bracket tl" />
-            <div className="corner-bracket tr" />
-            <div className="corner-bracket bl" />
-            <div className="corner-bracket br" />
+            {/* Corner accents */}
+            {[
+              { top: 0, left: 0, borderWidth: "1px 0 0 1px" },
+              { top: 0, right: 0, borderWidth: "1px 1px 0 0" },
+              { bottom: 0, left: 0, borderWidth: "0 0 1px 1px" },
+              { bottom: 0, right: 0, borderWidth: "0 1px 1px 0" },
+            ].map((s, i) => (
+              <div key={i} style={{
+                position: "absolute", width: "22px", height: "22px",
+                borderColor: "rgba(201,168,76,0.35)", borderStyle: "solid", ...s,
+              }} />
+            ))}
 
-            <div style={{
-              position: "absolute", top: 0, right: 0,
-              width: "300px", height: "300px",
-              background: "radial-gradient(circle, rgba(34,197,94,0.07) 0%, transparent 70%)",
-              pointerEvents: "none",
-            }} />
-
-            <div style={{ display: "grid", gap: "16px", position: "relative" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                <input className="input-field" placeholder="Full Name" />
-                <input className="input-field" placeholder="Phone Number" />
+            <div style={{ display: "grid", gap: "36px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px" }} className="two-col">
+                <div>
+                  <label className="jost" style={{ fontSize: "0.5rem", letterSpacing: "0.3em", color: "#282828", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Full Name</label>
+                  <input className="form-field" placeholder="Your name" />
+                </div>
+                <div>
+                  <label className="jost" style={{ fontSize: "0.5rem", letterSpacing: "0.3em", color: "#282828", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Phone</label>
+                  <input className="form-field" placeholder="+977 ···" />
+                </div>
               </div>
-              <input className="input-field" placeholder="City / District" />
-              <select className="input-field" style={{ appearance: "none", cursor: "pointer" }}>
-                <option value="">Select T-Shirt Design</option>
-                <option>Black Oversized Tee — Rs. 1,499</option>
-                <option>White Essential Tee — Rs. 1,399</option>
-                <option>Dark Green Signature Tee — Rs. 1,499</option>
-              </select>
-              <select className="input-field" style={{ appearance: "none", cursor: "pointer" }}>
-                <option value="">Preferred Size</option>
-                {["S", "M", "L", "XL", "XXL"].map(s => <option key={s}>{s}</option>)}
-              </select>
-              <textarea
-                className="input-field"
-                placeholder="Any design, color, or delivery suggestion?"
-                style={{ minHeight: "100px", resize: "vertical" }}
-              />
 
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", paddingTop: "8px" }}>
-                <button type="button" className="glow-btn" style={{ flex: 1, fontSize: "0.8rem" }}>
-                  Submit Early Access Interest →
+              <div>
+                <label className="jost" style={{ fontSize: "0.5rem", letterSpacing: "0.3em", color: "#282828", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>City / District</label>
+                <input className="form-field" placeholder="Kathmandu, Pokhara..." />
+              </div>
+
+              <div>
+                <label className="jost" style={{ fontSize: "0.5rem", letterSpacing: "0.3em", color: "#282828", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Your Design</label>
+                <select className="form-field" style={{ appearance: "none" }}>
+                  <option value="">Select a design</option>
+                  <option>01 — The Phantom (Black Oversized) · Rs. 1,499</option>
+                  <option>02 — The Ghost (White Essential) · Rs. 1,399</option>
+                  <option>03 — The Venom (Dark Green Signature) · Rs. 1,499</option>
+                </select>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px" }} className="two-col">
+                <div>
+                  <label className="jost" style={{ fontSize: "0.5rem", letterSpacing: "0.3em", color: "#282828", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Size</label>
+                  <select className="form-field" style={{ appearance: "none" }}>
+                    <option value="">Select size</option>
+                    {["S", "M", "L", "XL", "XXL"].map(s => <option key={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div />
+              </div>
+
+              <div>
+                <label className="jost" style={{ fontSize: "0.5rem", letterSpacing: "0.3em", color: "#282828", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Your Vision (optional)</label>
+                <textarea className="form-field" placeholder="Design, color, or delivery suggestion..." style={{ minHeight: "80px", resize: "none" }} />
+              </div>
+
+              <div style={{ paddingTop: "12px" }}>
+                <button type="button" className="cta-gold" style={{ width: "100%", justifyContent: "center", fontSize: "0.5rem" }}>
+                  Submit My Early Access Interest →
                 </button>
               </div>
 
-              <p className="mono" style={{ fontSize: "0.55rem", color: "#3a3a3a", letterSpacing: "0.14em", textAlign: "center" }}>
-                YOUR DATA IS SAFE. MANTIX DOES NOT SHARE YOUR INFORMATION.
-              </p>
+              <div className="jost" style={{ fontSize: "0.48rem", color: "#1e1e1e", letterSpacing: "0.2em", textAlign: "center", textTransform: "uppercase" }}>
+                Your information is private and protected · MANTIX · Nepal
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer id="contact" style={{
-        borderTop: "1px solid rgba(255,255,255,0.06)",
-        background: "#050505",
-        padding: "80px 40px 40px",
-      }}>
-        <div style={{ maxWidth: "1320px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "60px", marginBottom: "80px", flexWrap: "wrap" }}>
+      {/* ━━━━━━━━━━━━━━━━━━━ FOOTER */}
+      <footer id="contact" style={{ background: "#040404", borderTop: "1px solid rgba(201,168,76,0.07)", padding: "88px 100px 52px" }}>
+        <div style={{ maxWidth: "1480px", margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "60px", marginBottom: "80px" }} className="three-col">
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-                <Image src="/MANTIX_LOGO.png" alt="MANTIX" width={44} height={44} style={{ filter: "drop-shadow(0 0 14px rgba(34,197,94,0.6))", borderRadius: "50%" }} />
-                <span className="bebas" style={{ fontSize: "1.5rem", color: "#22c55e", letterSpacing: "0.2em" }}>MANTIX</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "28px" }}>
+                <Image src="/MANTIX_LOGO.png" alt="MANTIX" width={40} height={40}
+                  style={{ borderRadius: "50%", filter: "drop-shadow(0 0 12px rgba(201,168,76,0.5))" }}
+                />
+                <div className="syncopate" style={{ fontSize: "0.85rem", color: "#c9a84c", letterSpacing: "0.34em" }}>MANTIX</div>
               </div>
-              <p style={{ color: "#4a4a4a", fontSize: "0.85rem", lineHeight: 1.8, maxWidth: "240px" }}>
-                Smart Fashion. Sharp Identity.<br />Nepal's next streetwear identity starts here.
+              <p className="cormorant" style={{ fontSize: "1.05rem", fontStyle: "italic", color: "#282828", lineHeight: 1.8, maxWidth: "260px" }}>
+                Smart Fashion. Sharp Identity.<br />Nepal's next streetwear story — starting now.
               </p>
             </div>
-            <div>
-              <div className="section-label" style={{ marginBottom: "20px" }}>Navigate</div>
-              {["Collection", "Why MANTIX", "Early Access", "Contact"].map(l => (
-                <div key={l} style={{ marginBottom: "12px" }}>
-                  <a href={`#${l.toLowerCase().replace(" ", "-")}`} style={{ color: "#4a4a4a", textDecoration: "none", fontSize: "0.85rem", transition: "color 0.2s" }}
-                    onMouseOver={(e) => (e.currentTarget.style.color = "#22c55e")}
-                    onMouseOut={(e) => (e.currentTarget.style.color = "#4a4a4a")}
-                  >{l}</a>
-                </div>
-              ))}
-            </div>
-            <div>
-              <div className="section-label" style={{ marginBottom: "20px" }}>Follow MANTIX</div>
-              {["Instagram", "TikTok", "Facebook"].map(s => (
-                <div key={s} style={{ marginBottom: "12px" }}>
-                  <a href="#" style={{ color: "#4a4a4a", textDecoration: "none", fontSize: "0.85rem", transition: "color 0.2s" }}
-                    onMouseOver={(e) => (e.currentTarget.style.color = "#22c55e")}
-                    onMouseOut={(e) => (e.currentTarget.style.color = "#4a4a4a")}
-                  >↗ {s}</a>
-                </div>
-              ))}
-            </div>
+            {[
+              { title: "Navigate", links: ["Collection", "Vision", "Early Access", "Contact"] },
+              { title: "Follow", links: ["Instagram", "TikTok", "Facebook"] },
+              { title: "Contact", links: ["mantix@nepal.com", "Kathmandu, NP"] },
+            ].map(col => (
+              <div key={col.title}>
+                <div className="syncopate" style={{ fontSize: "0.38rem", letterSpacing: "0.44em", color: "#c9a84c", textTransform: "uppercase", marginBottom: "24px" }}>{col.title}</div>
+                {col.links.map(l => (
+                  <div key={l} style={{ marginBottom: "16px" }}>
+                    <a href="#" className="jost" style={{ color: "#1e1e1e", textDecoration: "none", fontSize: "0.8rem", fontWeight: 300, letterSpacing: "0.06em", transition: "color 0.25s" }}
+                      onMouseOver={e => (e.currentTarget.style.color = "#c9a84c")}
+                      onMouseOut={e => (e.currentTarget.style.color = "#1e1e1e")}
+                    >{l}</a>
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
 
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "28px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
-            <span className="mono" style={{ fontSize: "0.55rem", color: "#2a2a2a", letterSpacing: "0.18em" }}>© 2026 MANTIX. ALL RIGHTS RESERVED.</span>
-            <span className="mono" style={{ fontSize: "0.55rem", color: "#2a2a2a", letterSpacing: "0.18em" }}>BUILDING SMART FASHION — STEP BY STEP.</span>
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: "28px", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+            <span className="jost" style={{ fontSize: "0.58rem", color: "#181818", letterSpacing: "0.2em" }}>© 2026 MANTIX. All rights reserved.</span>
+            <span className="jost" style={{ fontSize: "0.58rem", color: "#181818", letterSpacing: "0.2em" }}>Building smart fashion — step by step.</span>
           </div>
         </div>
       </footer>
-    </main>
+    </>
   );
 }

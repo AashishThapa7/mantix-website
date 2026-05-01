@@ -24,15 +24,15 @@ export default function Home() {
 
   const features = [
     {
-      title: "Premium T-Shirts",
-      text: "Soft, comfortable, and clean designs made for everyday wear.",
+      title: "Designed T-Shirts",
+      text: "Original MANTIX T-shirt designs made for everyday style and identity.",
     },
     {
       title: "Modern Streetwear",
       text: "Minimal, bold, and youth-focused fashion for Nepal’s new generation.",
     },
     {
-      title: "Affordable Style",
+      title: "Affordable Premium",
       text: "A premium look at a practical price for early customers.",
     },
     {
@@ -61,7 +61,7 @@ export default function Home() {
                 MANTIX
               </h1>
               <p className="text-xs uppercase tracking-[0.25em] text-gray-400">
-                Premium T-Shirts
+                Designed T-Shirts
               </p>
             </div>
           </a>
@@ -73,7 +73,7 @@ export default function Home() {
             <a href="#why" className="hover:text-green-400">
               Why MANTIX
             </a>
-            <a href="#preorder" className="hover:text-green-400">
+            <a href="#early-access" className="hover:text-green-400">
               Early Access
             </a>
             <a href="#contact" className="hover:text-green-400">
@@ -82,7 +82,7 @@ export default function Home() {
           </nav>
 
           <a
-            href="#preorder"
+            href="#early-access"
             className="hidden rounded-full bg-green-400 px-5 py-3 text-sm font-bold text-black hover:bg-green-300 md:inline-block"
           >
             Join Early Access
@@ -98,12 +98,14 @@ export default function Home() {
           <div>
             <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-300">
               <span className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_12px_rgba(34,197,94,0.9)]" />
-              First MANTIX T-Shirt Collection
+              First MANTIX designed T-shirt collection
             </div>
 
             <h2 className="text-5xl font-black uppercase tracking-tight md:text-7xl">
               MANTIX
-              <span className="block text-green-400">T-Shirt Drop</span>
+              <span className="block text-green-400">
+                Designed T-Shirts
+              </span>
             </h2>
 
             <p className="mt-6 max-w-xl text-xl font-semibold uppercase tracking-[0.18em] text-gray-200">
@@ -111,8 +113,8 @@ export default function Home() {
             </p>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-300">
-              MANTIX is starting with premium T-shirts for Nepal’s new
-              generation. Clean designs, strong identity, affordable pricing,
+              MANTIX is starting with premium designed T-shirts for Nepal’s new
+              generation. Clean graphics, strong identity, affordable pricing,
               and a future AI-powered shopping experience.
             </p>
 
@@ -121,11 +123,11 @@ export default function Home() {
                 href="#collection"
                 className="rounded-full bg-green-400 px-8 py-4 text-center font-bold text-black hover:bg-green-300"
               >
-                View Collection
+                View Designs
               </a>
 
               <a
-                href="#preorder"
+                href="#early-access"
                 className="rounded-full border border-green-400 px-8 py-4 text-center font-bold text-green-400 hover:bg-green-400 hover:text-black"
               >
                 Join Early Access
@@ -137,9 +139,7 @@ export default function Home() {
                 <p className="text-sm uppercase tracking-widest text-green-400">
                   First Product
                 </p>
-                <p className="mt-2 text-gray-300">
-                  Premium T-shirts only
-                </p>
+                <p className="mt-2 text-gray-300">Designed T-shirts only</p>
               </div>
 
               <div className="rounded-2xl border border-green-500/30 bg-zinc-950/80 p-4">
@@ -172,7 +172,7 @@ export default function Home() {
                     First Drop
                   </p>
                   <p className="mt-2 text-2xl font-black">
-                    Premium T-Shirts
+                    Designed T-Shirts
                   </p>
                 </div>
               </div>
@@ -181,11 +181,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Campaign Notice */}
+      {/* Notice */}
       <section className="border-y border-green-500/30 bg-green-500/10 px-6 py-5">
         <div className="mx-auto max-w-7xl text-center">
           <p className="font-semibold text-green-300">
-            Early access opening soon — help us choose the first MANTIX T-shirt designs.
+            Early access opening soon — help us choose the first MANTIX designed T-shirt designs.
           </p>
         </div>
       </section>
@@ -199,12 +199,12 @@ export default function Home() {
 
           <div className="mt-4 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <h2 className="max-w-3xl text-4xl font-black md:text-6xl">
-              Premium essentials built for everyday identity.
+              Premium designed T-shirts built for everyday identity.
             </h2>
 
             <p className="max-w-md text-gray-300">
-              Start with three strong T-shirt designs, collect demand, and
-              improve future drops using real customer feedback.
+              Start with three strong designs, collect demand, and improve
+              future drops using real customer feedback.
             </p>
           </div>
 
@@ -225,7 +225,7 @@ export default function Home() {
                 </div>
 
                 <p className="mt-6 text-sm uppercase tracking-[0.25em] text-green-400">
-                  First Drop
+                  Designed Tee
                 </p>
                 <h3 className="mt-3 text-2xl font-bold">{product.name}</h3>
                 <p className="mt-2 text-gray-400">{product.fit}</p>
@@ -237,7 +237,7 @@ export default function Home() {
                   </p>
 
                   <a
-                    href="#preorder"
+                    href="#early-access"
                     className="rounded-full bg-green-400 px-5 py-3 text-sm font-bold text-black hover:bg-green-300"
                   >
                     Vote / Reserve
@@ -277,7 +277,7 @@ export default function Home() {
       </section>
 
       {/* Early Access */}
-      <section id="preorder" className="px-6 py-24">
+      <section id="early-access" className="px-6 py-24">
         <div className="mx-auto max-w-4xl rounded-[2rem] border border-green-500/30 bg-zinc-950 p-8 shadow-[0_0_40px_rgba(34,197,94,0.12)] md:p-12">
           <div className="flex justify-center">
             <Image
@@ -294,7 +294,7 @@ export default function Home() {
           </p>
 
           <h2 className="mt-4 text-center text-4xl font-black md:text-5xl">
-            Help choose the first MANTIX T-shirt drop.
+            Help choose the first MANTIX designed T-shirt drop.
           </h2>
 
           <p className="mx-auto mt-5 max-w-2xl text-center leading-8 text-gray-300">
@@ -319,7 +319,7 @@ export default function Home() {
             />
 
             <select className="rounded-xl border border-white/10 bg-black px-4 py-3 outline-none focus:border-green-400">
-              <option>Select T-Shirt</option>
+              <option>Select T-Shirt Design</option>
               <option>Black Oversized Tee</option>
               <option>White Essential Tee</option>
               <option>Dark Green Signature Tee</option>

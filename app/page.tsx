@@ -3,41 +3,41 @@ import Image from "next/image";
 export default function Home() {
   const products = [
     {
-      name: "Black Football Drop Tee",
+      name: "Black Oversized Tee",
       price: "Rs. 1,499",
       fit: "Oversized Fit",
-      detail: "Original football-inspired design",
+      detail: "Premium everyday streetwear essential",
     },
     {
-      name: "Dark Green Matchday Tee",
-      price: "Rs. 1,499",
-      fit: "Regular / Oversized",
-      detail: "Built for game-night energy",
-    },
-    {
-      name: "MANTIX Passion Tee",
+      name: "White Essential Tee",
       price: "Rs. 1,399",
-      fit: "Streetwear Fit",
-      detail: "Limited first drop",
+      fit: "Regular / Oversized",
+      detail: "Clean minimal design for daily wear",
+    },
+    {
+      name: "Dark Green Signature Tee",
+      price: "Rs. 1,499",
+      fit: "Oversized Fit",
+      detail: "Core MANTIX identity colorway",
     },
   ];
 
   const features = [
     {
-      title: "Original Designs",
-      text: "Football-inspired tees without copying official FIFA, World Cup, or team logos.",
+      title: "Premium T-Shirts",
+      text: "Soft, comfortable, and clean designs made for everyday wear.",
     },
     {
-      title: "Limited Drop",
-      text: "A small first collection to test demand before producing more stock.",
+      title: "Modern Streetwear",
+      text: "Minimal, bold, and youth-focused fashion for Nepal’s new generation.",
     },
     {
-      title: "Built for Nepal",
-      text: "Designed for Nepali football fans, game nights, and streetwear culture.",
+      title: "Affordable Style",
+      text: "A premium look at a practical price for early customers.",
     },
     {
-      title: "Data-Driven Growth",
-      text: "Customer interest, size choices, and design feedback will guide future drops.",
+      title: "AI-Powered Growth",
+      text: "Customer choices and feedback will guide future collections.",
     },
   ];
 
@@ -61,7 +61,7 @@ export default function Home() {
                 MANTIX
               </h1>
               <p className="text-xs uppercase tracking-[0.25em] text-gray-400">
-                Football Drop
+                Premium T-Shirts
               </p>
             </div>
           </a>
@@ -74,7 +74,7 @@ export default function Home() {
               Why MANTIX
             </a>
             <a href="#preorder" className="hover:text-green-400">
-              Pre-Order
+              Early Access
             </a>
             <a href="#contact" className="hover:text-green-400">
               Contact
@@ -85,7 +85,7 @@ export default function Home() {
             href="#preorder"
             className="hidden rounded-full bg-green-400 px-5 py-3 text-sm font-bold text-black hover:bg-green-300 md:inline-block"
           >
-            Pre-Order Now
+            Join Early Access
           </a>
         </div>
       </header>
@@ -98,22 +98,22 @@ export default function Home() {
           <div>
             <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-300">
               <span className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_12px_rgba(34,197,94,0.9)]" />
-              World football season collection
+              First MANTIX T-Shirt Collection
             </div>
 
             <h2 className="text-5xl font-black uppercase tracking-tight md:text-7xl">
               MANTIX
-              <span className="block text-green-400">Football Drop</span>
+              <span className="block text-green-400">T-Shirt Drop</span>
             </h2>
 
             <p className="mt-6 max-w-xl text-xl font-semibold uppercase tracking-[0.18em] text-gray-200">
-              Wear the passion of the game.
+              Smart Fashion. Sharp Identity.
             </p>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-300">
-              A limited football-inspired T-shirt collection by MANTIX, built
-              for fans, streetwear energy, and Nepal’s new generation. Original
-              designs. Sharp identity. Game-night ready.
+              MANTIX is starting with premium T-shirts for Nepal’s new
+              generation. Clean designs, strong identity, affordable pricing,
+              and a future AI-powered shopping experience.
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -128,26 +128,26 @@ export default function Home() {
                 href="#preorder"
                 className="rounded-full border border-green-400 px-8 py-4 text-center font-bold text-green-400 hover:bg-green-400 hover:text-black"
               >
-                Pre-Order Now
+                Join Early Access
               </a>
             </div>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl border border-green-500/30 bg-zinc-950/80 p-4">
                 <p className="text-sm uppercase tracking-widest text-green-400">
-                  Original
+                  First Product
                 </p>
                 <p className="mt-2 text-gray-300">
-                  Football-inspired tees only
+                  Premium T-shirts only
                 </p>
               </div>
 
               <div className="rounded-2xl border border-green-500/30 bg-zinc-950/80 p-4">
                 <p className="text-sm uppercase tracking-widest text-green-400">
-                  Limited Drop
+                  Limited Test Drop
                 </p>
                 <p className="mt-2 text-gray-300">
-                  Small batch for first launch
+                  Small batch before scaling
                 </p>
               </div>
             </div>
@@ -169,9 +169,11 @@ export default function Home() {
 
                 <div className="mt-8 rounded-2xl border border-green-500/30 bg-black p-5 text-center">
                   <p className="text-sm uppercase tracking-[0.25em] text-green-400">
-                    Built Different
+                    First Drop
                   </p>
-                  <p className="mt-2 text-2xl font-black">Made to Move</p>
+                  <p className="mt-2 text-2xl font-black">
+                    Premium T-Shirts
+                  </p>
                 </div>
               </div>
             </div>
@@ -183,7 +185,7 @@ export default function Home() {
       <section className="border-y border-green-500/30 bg-green-500/10 px-6 py-5">
         <div className="mx-auto max-w-7xl text-center">
           <p className="font-semibold text-green-300">
-            Pre-orders opening soon — limited first drop for football fans.
+            Early access opening soon — help us choose the first MANTIX T-shirt designs.
           </p>
         </div>
       </section>
@@ -192,17 +194,17 @@ export default function Home() {
       <section id="collection" className="px-6 py-24">
         <div className="mx-auto max-w-7xl">
           <p className="font-semibold uppercase tracking-[0.3em] text-green-400">
-            First Football Collection
+            First Collection
           </p>
 
           <div className="mt-4 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <h2 className="max-w-3xl text-4xl font-black md:text-6xl">
-              Original football-inspired tees for the season.
+              Premium essentials built for everyday identity.
             </h2>
 
             <p className="max-w-md text-gray-300">
-              Start with three strong designs, collect demand, and print based
-              on real pre-orders.
+              Start with three strong T-shirt designs, collect demand, and
+              improve future drops using real customer feedback.
             </p>
           </div>
 
@@ -223,7 +225,7 @@ export default function Home() {
                 </div>
 
                 <p className="mt-6 text-sm uppercase tracking-[0.25em] text-green-400">
-                  Limited Drop
+                  First Drop
                 </p>
                 <h3 className="mt-3 text-2xl font-bold">{product.name}</h3>
                 <p className="mt-2 text-gray-400">{product.fit}</p>
@@ -238,7 +240,7 @@ export default function Home() {
                     href="#preorder"
                     className="rounded-full bg-green-400 px-5 py-3 text-sm font-bold text-black hover:bg-green-300"
                   >
-                    Pre-Order
+                    Vote / Reserve
                   </a>
                 </div>
               </div>
@@ -251,11 +253,11 @@ export default function Home() {
       <section id="why" className="bg-zinc-950 px-6 py-24">
         <div className="mx-auto max-w-7xl">
           <p className="font-semibold uppercase tracking-[0.3em] text-green-400">
-            Why This Drop?
+            Why MANTIX?
           </p>
 
           <h2 className="mt-4 max-w-3xl text-4xl font-black md:text-6xl">
-            A smart first campaign for MANTIX.
+            A simple start with a scalable fashion vision.
           </h2>
 
           <div className="mt-12 grid gap-6 md:grid-cols-4">
@@ -274,7 +276,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Preorder */}
+      {/* Early Access */}
       <section id="preorder" className="px-6 py-24">
         <div className="mx-auto max-w-4xl rounded-[2rem] border border-green-500/30 bg-zinc-950 p-8 shadow-[0_0_40px_rgba(34,197,94,0.12)] md:p-12">
           <div className="flex justify-center">
@@ -288,16 +290,16 @@ export default function Home() {
           </div>
 
           <p className="mt-6 text-center font-semibold uppercase tracking-[0.3em] text-green-400">
-            Pre-Order Interest
+            Early Access
           </p>
 
           <h2 className="mt-4 text-center text-4xl font-black md:text-5xl">
-            Reserve your football drop tee.
+            Help choose the first MANTIX T-shirt drop.
           </h2>
 
           <p className="mx-auto mt-5 max-w-2xl text-center leading-8 text-gray-300">
             This form is currently for collecting interest. Next, we can connect
-            it to Supabase, MongoDB, or a backend API so every order is saved.
+            it to Supabase, MongoDB, or a backend API so every response is saved.
           </p>
 
           <form className="mt-10 grid gap-4">
@@ -318,9 +320,9 @@ export default function Home() {
 
             <select className="rounded-xl border border-white/10 bg-black px-4 py-3 outline-none focus:border-green-400">
               <option>Select T-Shirt</option>
-              <option>Black Football Drop Tee</option>
-              <option>Dark Green Matchday Tee</option>
-              <option>MANTIX Passion Tee</option>
+              <option>Black Oversized Tee</option>
+              <option>White Essential Tee</option>
+              <option>Dark Green Signature Tee</option>
             </select>
 
             <select className="rounded-xl border border-white/10 bg-black px-4 py-3 outline-none focus:border-green-400">
@@ -341,19 +343,9 @@ export default function Home() {
               type="button"
               className="rounded-full bg-green-400 px-8 py-4 font-bold text-black hover:bg-green-300"
             >
-              Submit Pre-Order Interest
+              Submit Early Access Interest
             </button>
           </form>
-        </div>
-      </section>
-
-      {/* Legal / Safety Note */}
-      <section className="px-6 pb-20">
-        <div className="mx-auto max-w-5xl rounded-3xl border border-yellow-500/30 bg-yellow-500/10 p-6 text-sm leading-7 text-yellow-100">
-          <strong>Design note:</strong> MANTIX football tees should use original
-          football-inspired artwork. Avoid official FIFA, World Cup, country
-          federation, club, or player-owned logos unless proper permission is
-          obtained.
         </div>
       </section>
 

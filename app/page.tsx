@@ -1,22 +1,54 @@
+import Image from "next/image";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white">
       {/* Header */}
       <header className="flex items-center justify-between px-8 py-6 border-b border-green-500/30">
-        <h1 className="text-2xl font-bold tracking-widest text-green-400">
-          MANTIX
-        </h1>
+        <div className="flex items-center gap-3">
+          <Image
+            src="/mantix-logo.png"
+            alt="MANTIX Logo"
+            width={52}
+            height={52}
+            className="rounded-full"
+            priority
+          />
+
+          <h1 className="text-2xl font-bold tracking-widest text-green-400">
+            MANTIX
+          </h1>
+        </div>
 
         <nav className="hidden md:flex gap-8 text-sm text-gray-300">
-          <a href="#about" className="hover:text-green-400">About</a>
-          <a href="#collection" className="hover:text-green-400">Collection</a>
-          <a href="#why" className="hover:text-green-400">Why MANTIX</a>
-          <a href="#contact" className="hover:text-green-400">Contact</a>
+          <a href="#about" className="hover:text-green-400">
+            About
+          </a>
+          <a href="#collection" className="hover:text-green-400">
+            Collection
+          </a>
+          <a href="#why" className="hover:text-green-400">
+            Why MANTIX
+          </a>
+          <a href="#contact" className="hover:text-green-400">
+            Contact
+          </a>
         </nav>
       </header>
 
       {/* Hero */}
       <section className="px-8 py-24 text-center">
+        <div className="mx-auto mb-8 flex justify-center">
+          <Image
+            src="/mantix-logo.png"
+            alt="MANTIX Logo"
+            width={140}
+            height={140}
+            className="drop-shadow-[0_0_25px_rgba(34,197,94,0.65)]"
+            priority
+          />
+        </div>
+
         <p className="text-green-400 font-semibold mb-4">
           AI-Powered Fashion Brand for Nepal
         </p>
@@ -93,9 +125,13 @@ export default function Home() {
                 className="rounded-3xl border border-green-500/30 bg-zinc-950 p-6"
               >
                 <div className="h-56 rounded-2xl bg-gradient-to-br from-zinc-800 to-black flex items-center justify-center">
-                  <span className="text-green-400 text-5xl font-black">
-                    M
-                  </span>
+                  <Image
+                    src="/mantix-logo.png"
+                    alt="MANTIX Product Logo"
+                    width={100}
+                    height={100}
+                    className="drop-shadow-[0_0_18px_rgba(34,197,94,0.65)]"
+                  />
                 </div>
 
                 <h3 className="mt-6 text-xl font-bold">{name}</h3>
@@ -142,6 +178,16 @@ export default function Home() {
       {/* Early Access */}
       <section id="early-access" className="px-8 py-20">
         <div className="max-w-3xl mx-auto rounded-3xl border border-green-500/30 bg-zinc-950 p-8">
+          <div className="flex justify-center">
+            <Image
+              src="/mantix-logo.png"
+              alt="MANTIX Logo"
+              width={90}
+              height={90}
+              className="mb-4 drop-shadow-[0_0_18px_rgba(34,197,94,0.65)]"
+            />
+          </div>
+
           <p className="text-green-400 font-semibold uppercase tracking-widest text-center">
             Early Access
           </p>
@@ -151,9 +197,18 @@ export default function Home() {
           </h2>
 
           <form className="mt-8 grid gap-4">
-            <input className="rounded-xl bg-black border border-white/10 px-4 py-3" placeholder="Full Name" />
-            <input className="rounded-xl bg-black border border-white/10 px-4 py-3" placeholder="Phone Number" />
-            <input className="rounded-xl bg-black border border-white/10 px-4 py-3" placeholder="City / District" />
+            <input
+              className="rounded-xl bg-black border border-white/10 px-4 py-3"
+              placeholder="Full Name"
+            />
+            <input
+              className="rounded-xl bg-black border border-white/10 px-4 py-3"
+              placeholder="Phone Number"
+            />
+            <input
+              className="rounded-xl bg-black border border-white/10 px-4 py-3"
+              placeholder="City / District"
+            />
             <select className="rounded-xl bg-black border border-white/10 px-4 py-3">
               <option>Preferred Size</option>
               <option>S</option>
@@ -162,7 +217,10 @@ export default function Home() {
               <option>XL</option>
               <option>XXL</option>
             </select>
-            <textarea className="rounded-xl bg-black border border-white/10 px-4 py-3" placeholder="What kind of design should MANTIX create?" />
+            <textarea
+              className="rounded-xl bg-black border border-white/10 px-4 py-3"
+              placeholder="What kind of design should MANTIX create?"
+            />
 
             <button className="rounded-full bg-green-400 px-8 py-4 font-bold text-black hover:bg-green-300">
               Join MANTIX Early Access
@@ -172,7 +230,20 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="border-t border-green-500/30 px-8 py-10 text-center text-gray-400">
+      <footer
+        id="contact"
+        className="border-t border-green-500/30 px-8 py-10 text-center text-gray-400"
+      >
+        <div className="flex justify-center">
+          <Image
+            src="/MANTIX_LOGO.png"
+            alt="MANTIX Logo"
+            width={70}
+            height={70}
+            className="mb-4 drop-shadow-[0_0_16px_rgba(34,197,94,0.65)]"
+          />
+        </div>
+
         <h2 className="text-2xl font-bold tracking-widest text-green-400">
           MANTIX
         </h2>
